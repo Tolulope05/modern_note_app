@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: primaryColor,
         secondaryHeaderColor: secondaryColor,
       ),
+      debugShowCheckedModeBanner: false,
       home: NoteList(),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_app/models/note_for_listing.dart';
+import 'package:note_app/widgets/note_delete_dialogue.dart';
 import 'package:note_app/screens/note_modify.dart';
 
 class NoteList extends StatelessWidget {
@@ -7,7 +8,7 @@ class NoteList extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  List<NoteForListing> notes = [
+  final List<NoteForListing> notes = [
     NoteForListing(
       noteId: "1",
       noteTitle: "Note 1",
@@ -67,17 +68,35 @@ class NoteList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("List of ")),
+      appBar: AppBar(title: const Text("List of notes!")),
       body: ListView.separated(
         itemBuilder: ((context, index) {
-          return ListTile(
-            title: Text(
-              notes[index].noteTitle,
-              style: TextStyle(color: Theme.of(context).primaryColor),
-            ),
-            subtitle: Text(
-              notes[index].lastEditDateTime.toIso8601String(),
-              style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+          return Dismissible(
+            key: ValueKey(notes[index].noteId),
+            direction: DismissDirection.startToEnd,
+            onDismissed: (direction) {},
+            confirmDismiss: (direction) async {
+              await showDialog(
+                  context: context, builder: (_) => NoteDeleteDialogue());
+            },
+            child: ListTile(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => NoteModify(
+                      noteId: notes[index].noteId,
+                    ),
+                  ),
+                );
+              },
+              title: Text(
+                notes[index].noteTitle,
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
+              subtitle: Text(
+                notes[index].lastEditDateTime.toIso8601String(),
+                style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+              ),
             ),
           );
         }),
