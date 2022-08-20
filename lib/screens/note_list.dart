@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:note_app/const/colors.dart';
 import 'package:note_app/models/note_for_listing.dart';
+import 'package:note_app/services/note_services.dart';
 import 'package:note_app/widgets/note_delete_dialogue.dart';
 import 'package:note_app/screens/note_modify.dart';
 
@@ -9,65 +11,15 @@ class NoteList extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final List<NoteForListing> notes = [
-    NoteForListing(
-      noteId: "1",
-      noteTitle: "Note 1",
-      createdTime: DateTime.now(),
-      lastEditDateTime: DateTime.now(),
-    ),
-    NoteForListing(
-      noteId: "2",
-      noteTitle: "Note 2",
-      createdTime: DateTime.now(),
-      lastEditDateTime: DateTime.now(),
-    ),
-    NoteForListing(
-      noteId: "3",
-      noteTitle: "Note 3",
-      createdTime: DateTime.now(),
-      lastEditDateTime: DateTime.now(),
-    ),
-    NoteForListing(
-      noteId: "4",
-      noteTitle: "Note 4",
-      createdTime: DateTime.now(),
-      lastEditDateTime: DateTime.now(),
-    ),
-    NoteForListing(
-      noteId: "5",
-      noteTitle: "Note 5",
-      createdTime: DateTime.now(),
-      lastEditDateTime: DateTime.now(),
-    ),
-    NoteForListing(
-      noteId: "6",
-      noteTitle: "Note 6",
-      createdTime: DateTime.now(),
-      lastEditDateTime: DateTime.now(),
-    ),
-    NoteForListing(
-      noteId: "7",
-      noteTitle: "Note 7",
-      createdTime: DateTime.now(),
-      lastEditDateTime: DateTime.now(),
-    ),
-    NoteForListing(
-      noteId: "8",
-      noteTitle: "Note 8",
-      createdTime: DateTime.now(),
-      lastEditDateTime: DateTime.now(),
-    ),
-    NoteForListing(
-      noteId: "9",
-      noteTitle: "Note 9",
-      createdTime: DateTime.now(),
-      lastEditDateTime: DateTime.now(),
-    ),
-  ];
+  NoteServices get service => GetIt.I<NoteServices>();
+  String dateConverter(DateTime date) {
+    return NoteServices().getFormattedDateTime(date);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final List<NoteForListing> notes = service.getNoteList();
+
     return Scaffold(
       appBar: AppBar(title: const Text("List of notes!")),
       body: ListView.separated(
@@ -107,7 +59,7 @@ class NoteList extends StatelessWidget {
                 style: TextStyle(color: Theme.of(context).primaryColor),
               ),
               subtitle: Text(
-                notes[index].lastEditDateTime.toIso8601String(),
+                dateConverter(notes[index].lastEditDateTime),
                 style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
               ),
             ),
