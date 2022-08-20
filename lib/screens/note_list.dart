@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:note_app/const/colors.dart';
 import 'package:note_app/models/note_for_listing.dart';
 import 'package:note_app/widgets/note_delete_dialogue.dart';
 import 'package:note_app/screens/note_modify.dart';
@@ -76,9 +77,21 @@ class NoteList extends StatelessWidget {
             direction: DismissDirection.startToEnd,
             onDismissed: (direction) {},
             confirmDismiss: (direction) async {
-              await showDialog(
-                  context: context, builder: (_) => NoteDeleteDialogue());
+              final result = await showDialog(
+                context: context,
+                builder: (_) => const NoteDeleteDialogue(),
+              );
+              print(result);
+              return result;
             },
+            background: Container(
+              color: dismissibleBg,
+              padding: const EdgeInsets.only(left: 18),
+              child: const Align(
+                alignment: Alignment.centerLeft,
+                child: Icon(Icons.delete),
+              ),
+            ),
             child: ListTile(
               onTap: () {
                 Navigator.of(context).push(
@@ -102,7 +115,7 @@ class NoteList extends StatelessWidget {
         }),
         separatorBuilder: (_, __) => Container(
           height: 1,
-          color: Colors.green,
+          color: greyColor,
         ),
         itemCount: 5,
       ),
