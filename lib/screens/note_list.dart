@@ -20,7 +20,7 @@ class _NoteListState extends State<NoteList> {
   NoteServices get service => GetIt.I<NoteServices>();
 
   String dateConverter(DateTime date) {
-    return NoteServices().getFormattedDateTime(date);
+    return service.getFormattedDateTime(date);
   }
 
   late APIResponse<List<NoteForListing>> _apiResponse;
@@ -53,13 +53,13 @@ class _NoteListState extends State<NoteList> {
         }
         if (_apiResponse.error) {
           Center(
-            child: Text(_apiResponse.errorMessage),
+            child: Text(_apiResponse.errorMessage!),
           );
         }
         return ListView.separated(
           itemBuilder: ((context, index) {
             return Dismissible(
-              key: ValueKey(_apiResponse.data[index].noteId),
+              key: ValueKey(_apiResponse.data![index].noteId),
               direction: DismissDirection.startToEnd,
               onDismissed: (direction) {},
               confirmDismiss: (direction) async {
@@ -83,17 +83,17 @@ class _NoteListState extends State<NoteList> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => NoteModify(
-                        noteId: _apiResponse.data[index].noteId,
+                        noteId: _apiResponse.data![index].noteId,
                       ),
                     ),
                   );
                 },
                 title: Text(
-                  _apiResponse.data[index].noteTitle,
+                  _apiResponse.data![index].noteTitle,
                   style: TextStyle(color: Theme.of(context).primaryColor),
                 ),
                 subtitle: Text(
-                  dateConverter(_apiResponse.data[index].lastEditDateTime),
+                  dateConverter(_apiResponse.data![index].lastEditDateTime),
                   style:
                       TextStyle(color: Theme.of(context).secondaryHeaderColor),
                 ),
@@ -104,7 +104,7 @@ class _NoteListState extends State<NoteList> {
             height: 1,
             color: greyColor,
           ),
-          itemCount: _apiResponse.data.length,
+          itemCount: _apiResponse.data!.length,
         );
       }),
       floatingActionButton: FloatingActionButton(

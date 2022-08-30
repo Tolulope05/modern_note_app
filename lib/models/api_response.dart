@@ -1,10 +1,10 @@
 class APIResponse<T> {
-  T data;
+  T? data;
   bool error;
-  String errorMessage;
+  String? errorMessage;
   APIResponse({
-    required this.data,
+    this.data,
     this.error = false,
-    required this.errorMessage,
+    this.errorMessage,
   });
 }
