@@ -13,7 +13,7 @@ void main() {
 
 void setupLocator() {
   GetIt.I.registerLazySingleton(() => NoteServices());
-  GetIt.I<NoteServices>();
+  // GetIt.I<NoteServices>();
 }
 
 class MyApp extends StatelessWidget {

@@ -1,65 +1,53 @@
+import 'dart:convert';
+
+import 'package:note_app/models/api_response.dart';
+import 'package:http/http.dart' as http;
+
 import '../models/note_for_listing.dart';
 
 class NoteServices {
-  List<NoteForListing> getNoteList() {
-    final List<NoteForListing> notes = [
-      NoteForListing(
-        noteId: "1",
-        noteTitle: "Note 1",
-        createdTime: DateTime.now(),
-        lastEditDateTime: DateTime.now(),
-      ),
-      NoteForListing(
-        noteId: "2",
-        noteTitle: "Note 2",
-        createdTime: DateTime.now(),
-        lastEditDateTime: DateTime.now(),
-      ),
-      NoteForListing(
-        noteId: "3",
-        noteTitle: "Note 3",
-        createdTime: DateTime.now(),
-        lastEditDateTime: DateTime.now(),
-      ),
-      NoteForListing(
-        noteId: "4",
-        noteTitle: "Note 4",
-        createdTime: DateTime.now(),
-        lastEditDateTime: DateTime.now(),
-      ),
-      NoteForListing(
-        noteId: "5",
-        noteTitle: "Note 5",
-        createdTime: DateTime.now(),
-        lastEditDateTime: DateTime.now(),
-      ),
-      NoteForListing(
-        noteId: "6",
-        noteTitle: "Note 6",
-        createdTime: DateTime.now(),
-        lastEditDateTime: DateTime.now(),
-      ),
-      NoteForListing(
-        noteId: "7",
-        noteTitle: "Note 7",
-        createdTime: DateTime.now(),
-        lastEditDateTime: DateTime.now(),
-      ),
-      NoteForListing(
-        noteId: "8",
-        noteTitle: "Note 8",
-        createdTime: DateTime.now(),
-        lastEditDateTime: DateTime.now(),
-      ),
-      NoteForListing(
-        noteId: "9",
-        noteTitle: "Note 9",
-        createdTime: DateTime.now(),
-        lastEditDateTime: DateTime.now(),
-      ),
-    ];
+  static const url = "api.notes.programmingaddict.com";
+  static const headers = <String, String>{
+    'apiKey': '08d771e2-7c49-1789-0eaa-32aff09f1471',
+  };
 
-    return notes;
+  Future<APIResponse<List<NoteForListing>>> getNoteList() async {
+    return http
+        .get(
+      Uri.parse("$url/notes"),
+      headers: headers,
+    )
+        .then((data) {
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        final List<NoteForListing> notes = <NoteForListing>[];
+        for (var item in jsonData) {
+          final note = NoteForListing(
+            noteId: item['noteID'],
+            noteTitle: item['noteTitle'],
+            createdTime: DateTime.parse(item['createdTime']),
+            lastEditDateTime: DateTime.parse(
+              item['createdTime'] ?? null,
+            ),
+          );
+          notes.add(note);
+        }
+        return APIResponse<List<NoteForListing>>(
+          data: notes,
+        );
+      }
+      return APIResponse<List<NoteForListing>>(
+        error: true,
+        errorMessage: "An error occured",
+        data: <NoteForListing>[],
+      );
+    }).catchError(
+      (_) => APIResponse<List<NoteForListing>>(
+        error: true,
+        errorMessage: "An error occured",
+        data: <NoteForListing>[],
+      ),
+    );
   }
 
   String getFormattedDateTime(DateTime date) {
