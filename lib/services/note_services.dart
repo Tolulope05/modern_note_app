@@ -20,20 +20,13 @@ class NoteServices {
       headers: headers,
     )
         .then((data) {
+      print(data);
       if (data.statusCode == 200) {
         final jsonData = json.decode(data.body);
         final List<NoteForListing> notes = <NoteForListing>[];
         for (var item in jsonData) {
-          final note = NoteForListing(
-            noteId: item['noteID'],
-            noteTitle: item['noteTitle'],
-            createDateTime: DateTime.parse(item['createDateTime']),
-            lastEditDateTime: DateTime.parse(
-              item['lastEditDateTime'] ?? item['createDateTime'],
-            ),
-          );
+          final note = NoteForListing.fromJson(item);
           notes.add(note);
-          print("success");
         }
 
         return APIResponse<List<NoteForListing>>(
@@ -64,16 +57,7 @@ class NoteServices {
         .then((data) {
       if (data.statusCode == 200) {
         final jsonData = json.decode(data.body);
-        final Note notes = Note(
-          noteId: jsonData['noteID'],
-          noteTitle: jsonData['noteTitle'],
-          noteDetails: jsonData['noteDetails'],
-          createDateTime: DateTime.parse(jsonData['createDateTime']),
-          lastEditDateTime: DateTime.parse(
-            jsonData['lastEditDateTime'] ?? jsonData['createDateTime'],
-          ),
-        );
-        print("success");
+        final Note notes = Note.fromJson(jsonData);
         return APIResponse(
           data: notes,
         );

@@ -4,9 +4,11 @@ import '../const/colors.dart';
 
 class TextInputWidget extends StatelessWidget {
   final String hintText;
+  final TextEditingController controller;
   const TextInputWidget({
     Key? key,
     required this.hintText,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -26,6 +28,7 @@ class TextInputWidget extends StatelessWidget {
       ),
       child: TextField(
         key: ValueKey(hintText),
+        controller: controller,
         decoration: InputDecoration(
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
