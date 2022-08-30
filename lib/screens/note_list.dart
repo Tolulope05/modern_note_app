@@ -47,58 +47,66 @@ class _NoteListState extends State<NoteList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("List of Note")),
-      body: _isLoading
-          ? CircularProgressIndicator()
-          : ListView.separated(
-              itemBuilder: ((context, index) {
-                return Dismissible(
-                  key: ValueKey(_apiResponse.data[index].noteId),
-                  direction: DismissDirection.startToEnd,
-                  onDismissed: (direction) {},
-                  confirmDismiss: (direction) async {
-                    final result = await showDialog(
-                      context: context,
-                      builder: (_) => const NoteDeleteDialogue(),
-                    );
-                    print(result);
-                    return result;
-                  },
-                  background: Container(
-                    color: dismissibleBg,
-                    padding: const EdgeInsets.only(left: 18),
-                    child: const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Icon(Icons.delete),
-                    ),
-                  ),
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => NoteModify(
-                            noteId: _apiResponse.data[index].noteId,
-                          ),
-                        ),
-                      );
-                    },
-                    title: Text(
-                      _apiResponse.data[index].noteTitle,
-                      style: TextStyle(color: Theme.of(context).primaryColor),
-                    ),
-                    subtitle: Text(
-                      dateConverter(_apiResponse.data[index].lastEditDateTime),
-                      style: TextStyle(
-                          color: Theme.of(context).secondaryHeaderColor),
-                    ),
-                  ),
+      body: Builder(builder: (context) {
+        if (_isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (_apiResponse.error) {
+          Center(
+            child: Text(_apiResponse.errorMessage),
+          );
+        }
+        return ListView.separated(
+          itemBuilder: ((context, index) {
+            return Dismissible(
+              key: ValueKey(_apiResponse.data[index].noteId),
+              direction: DismissDirection.startToEnd,
+              onDismissed: (direction) {},
+              confirmDismiss: (direction) async {
+                final result = await showDialog(
+                  context: context,
+                  builder: (_) => const NoteDeleteDialogue(),
                 );
-              }),
-              separatorBuilder: (_, __) => Container(
-                height: 1,
-                color: greyColor,
+                print(result);
+                return result;
+              },
+              background: Container(
+                color: dismissibleBg,
+                padding: const EdgeInsets.only(left: 18),
+                child: const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Icon(Icons.delete),
+                ),
               ),
-              itemCount: _apiResponse.data.length,
-            ),
+              child: ListTile(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => NoteModify(
+                        noteId: _apiResponse.data[index].noteId,
+                      ),
+                    ),
+                  );
+                },
+                title: Text(
+                  _apiResponse.data[index].noteTitle,
+                  style: TextStyle(color: Theme.of(context).primaryColor),
+                ),
+                subtitle: Text(
+                  dateConverter(_apiResponse.data[index].lastEditDateTime),
+                  style:
+                      TextStyle(color: Theme.of(context).secondaryHeaderColor),
+                ),
+              ),
+            );
+          }),
+          separatorBuilder: (_, __) => Container(
+            height: 1,
+            color: greyColor,
+          ),
+          itemCount: _apiResponse.data.length,
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(

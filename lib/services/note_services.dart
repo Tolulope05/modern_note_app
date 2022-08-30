@@ -34,6 +34,7 @@ class NoteServices {
         }
         return APIResponse<List<NoteForListing>>(
           data: notes,
+          errorMessage: "",
         );
       }
       return APIResponse<List<NoteForListing>>(
