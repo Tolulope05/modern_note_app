@@ -120,6 +120,29 @@ class NoteServices {
     });
   }
 
+  Future<APIResponse<bool>> deleteNote(String noteId) async {
+    return http
+        .delete(
+      Uri.parse("$url/notes/$noteId"),
+      headers: headers,
+    )
+        .then((data) {
+      print(data.statusCode);
+      print(data.body);
+      if (data.statusCode == 204) {
+        return APIResponse<bool>(
+          data: true,
+        );
+      }
+      return APIResponse<bool>(data: false);
+    }).onError((error, stackTrace) {
+      print(error);
+      return APIResponse<bool>(
+        data: false,
+      );
+    });
+  }
+
   String getFormattedDateTime(DateTime date) {
     return '${date.day}/${date.month}/${date.year}  ${date.hour}:${date.minute}';
   }
