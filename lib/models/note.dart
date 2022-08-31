@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+part 'note.g.dart';
+//flutter packages pub run build_runner build --delete-conflicting-outputs
+
+@JsonSerializable()
 class Note {
   String noteId;
   String noteTitle;
@@ -13,16 +18,6 @@ class Note {
     required this.lastEditDateTime,
   });
 
-  factory Note.fromJson(Map<String, dynamic> jsonData) {
-    Note notes = Note(
-      noteId: jsonData['noteID'],
-      noteTitle: jsonData['noteTitle'],
-      noteContent: jsonData['noteContent'],
-      createDateTime: DateTime.parse(jsonData['createDateTime']),
-      lastEditDateTime: DateTime.parse(
-        jsonData['lastEditDateTime'] ?? jsonData['createDateTime'],
-      ),
-    );
-    return notes;
-  }
+  factory Note.fromJson(Map<String, dynamic> jsonData) =>
+      _$NoteFromJson(jsonData);
 }
