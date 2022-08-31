@@ -83,7 +83,30 @@ class NoteServices {
       print(data.statusCode);
       print(data.body);
       if (data.statusCode == 201) {
-        print(data.body);
+        return APIResponse<bool>(
+          data: true,
+        );
+      }
+      return APIResponse<bool>(data: false, error: true);
+    }).onError((error, stackTrace) {
+      print(error);
+      return APIResponse<bool>(data: false, error: true);
+    });
+  }
+
+  Future<APIResponse<bool>> updateNote(String noteId, NoteInsert note) async {
+    return http
+        .put(
+      Uri.parse("$url/notes/$noteId"),
+      headers: headers,
+      body: json.encode(
+        note.toJson(),
+      ),
+    )
+        .then((data) {
+      print(data.statusCode);
+      print(data.body);
+      if (data.statusCode == 204) {
         return APIResponse<bool>(
           data: true,
         );

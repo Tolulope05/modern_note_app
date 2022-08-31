@@ -81,13 +81,18 @@ class _NoteListState extends State<NoteList> {
               ),
               child: ListTile(
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => NoteModify(
-                        noteId: _apiResponse.data![index].noteId,
-                      ),
-                    ),
-                  );
+                  Navigator.of(context)
+                      .push(
+                        MaterialPageRoute(
+                          builder: (context) => NoteModify(
+                            noteId: _apiResponse.data![index].noteId,
+                          ),
+                        ),
+                      )
+                      .then(
+                        (value) =>
+                            _fetchNotes(), // To refresh screen as a new note is updated.
+                      );
                 },
                 title: Text(
                   _apiResponse.data![index].noteTitle,

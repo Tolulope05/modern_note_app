@@ -73,6 +73,38 @@ class _NoteModifyState extends State<NoteModify> {
                   onPressed: () async {
                     if (isEditing) {
                       // Update note
+                      final note = NoteInsert(
+                        noteTitle: _titleController.text,
+                        noteContent: _noteController.text,
+                      );
+                      final result = await noteServices.updateNote(
+                        widget.noteId!,
+                        note,
+                      );
+                      final title = result.error ? "Failed" : "Done";
+                      final text = result.error
+                          ? (result.errorMessage ?? "An Error occured")
+                          : "Your note was updated successfully!";
+                      showDialog(
+                          context: context,
+                          builder: ((context) {
+                            return AlertDialog(
+                              title: Text(title),
+                              content: Text(text),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text("Ok"),
+                                )
+                              ],
+                            );
+                          })).then((data) {
+                        if (result.data!) {
+                          Navigator.of(context).pop();
+                        }
+                      });
                     } else {
                       // Create Note
                       final note = NoteInsert(
@@ -80,16 +112,15 @@ class _NoteModifyState extends State<NoteModify> {
                         noteContent: _noteController.text,
                       );
                       final result = await noteServices.createNote(note);
-
-                      const title = "Done";
+                      final title = result.error ? "Failed" : "Done";
                       final text = result.error
-                          ? result.errorMessage ?? "An Error occured"
+                          ? (result.errorMessage ?? "An Error occured")
                           : "Your note was created!";
                       showDialog(
                           context: context,
                           builder: ((context) {
                             return AlertDialog(
-                              title: const Text(title),
+                              title: Text(title),
                               content: Text(text),
                               actions: [
                                 TextButton(
