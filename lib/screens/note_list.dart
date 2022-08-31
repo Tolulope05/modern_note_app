@@ -38,6 +38,7 @@ class _NoteListState extends State<NoteList> {
       _isLoading = true;
     });
     _apiResponse = await service.getNoteList();
+    print(_apiResponse.data); // My guy dey return empty map
     setState(() {
       _isLoading = false;
     });
@@ -109,9 +110,14 @@ class _NoteListState extends State<NoteList> {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => NoteModify()),
-          );
+          Navigator.of(context)
+              .push(
+                MaterialPageRoute(builder: (context) => NoteModify()),
+              )
+              .then(
+                (value) =>
+                    _fetchNotes(), // To refresh screen as a new note is updated.
+              );
         },
         child: const Icon(Icons.add),
       ),

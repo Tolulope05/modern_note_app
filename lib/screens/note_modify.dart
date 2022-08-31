@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:note_app/models/note_insert.dart';
 import 'package:note_app/services/note_services.dart';
 
 import '../models/note.dart';
@@ -26,10 +27,11 @@ class _NoteModifyState extends State<NoteModify> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _isLoading = true;
-    });
-    if (widget.noteId != null) {
+
+    if (isEditing) {
+      setState(() {
+        _isLoading = true;
+      });
       noteServices.getNote(widget.noteId!).then((response) {
         if (response.error) {
           errorMessage = response.errorMessage ?? "An Error ocured";
@@ -68,11 +70,45 @@ class _NoteModifyState extends State<NoteModify> {
                   controller: _noteController,
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
+                  onPressed: () async {
+                    if (isEditing) {
+                      // Update note
+                    } else {
+                      // Create Note
+                      final note = NoteInsert(
+                        noteTitle: _titleController.text,
+                        noteContent: _noteController.text,
+                      );
+                      final result = await noteServices.createNote(note);
+
+                      const title = "Done";
+                      final text = result.error
+                          ? result.errorMessage ?? "An Error occured"
+                          : "Your note was created!";
+                      showDialog(
+                          context: context,
+                          builder: ((context) {
+                            return AlertDialog(
+                              title: const Text(title),
+                              content: Text(text),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text("Ok"),
+                                )
+                              ],
+                            );
+                          })).then((data) {
+                        if (result.data!) {
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    }
                   },
-                  child: const Text(
-                    "Submit",
+                  child: Text(
+                    isEditing ? "Completed" : "Submit",
                   ),
                 ),
               ],
