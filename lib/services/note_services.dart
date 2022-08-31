@@ -76,10 +76,7 @@ class NoteServices {
       Uri.parse("$url/notes"),
       headers: headers,
       body: json.encode(
-        NoteInsert(
-          noteTitle: note.noteTitle,
-          noteContent: note.noteContent,
-        ).toJson(),
+        note.toJson(),
       ),
     )
         .then((data) {
